@@ -25,10 +25,10 @@ public class BoardController {
 		return "board/notice";
 	}
 	
-	@GetMapping("/qna")
+	@GetMapping("/faq")
 	public String qna() {
 		
-		return "board/qna";
+		return "board/faq";
 	}
 	
 	@GetMapping("/oto")
