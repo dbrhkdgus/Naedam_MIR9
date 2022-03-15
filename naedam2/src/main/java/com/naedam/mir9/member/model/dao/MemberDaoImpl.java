@@ -1,4 +1,4 @@
-package com.naedam.mir9.admin.model.dao;
+package com.naedam.mir9.member.model.dao;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
