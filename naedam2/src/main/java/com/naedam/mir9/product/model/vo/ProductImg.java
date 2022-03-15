@@ -20,7 +20,7 @@ public class ProductImg implements Serializable {
 	
 	private int productImgNo;
 	private int productNo;
-	private int level;
+	private int imgLevel;
 	private String imgUrl;
 
 }

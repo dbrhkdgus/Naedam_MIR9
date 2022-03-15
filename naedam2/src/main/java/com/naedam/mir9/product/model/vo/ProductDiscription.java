@@ -20,7 +20,7 @@ public class ProductDiscription implements Serializable {
 	
 	private int productDiscriptionNo;
 	private int productNo;
-	private int level;
+	private int discriptionLevel;
 	private String content;
 
 }
