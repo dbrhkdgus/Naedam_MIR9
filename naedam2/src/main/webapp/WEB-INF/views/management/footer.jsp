@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-	<jsp:param value="Footer_managing" name="title"/>
+	<jsp:param value="하단 관리" name="title"/>
 </jsp:include>
 
 <!-- content-wrapper -->

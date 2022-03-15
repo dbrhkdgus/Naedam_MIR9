@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-	<jsp:param value="Menu_List" name="title"/>
+	<jsp:param value="메뉴 관리" name="title"/>
 </jsp:include>
 <!-- content-wrapper -->
 <div class="content-wrapper">

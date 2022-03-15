@@ -1,11 +1,11 @@
-package com.naedam.mir9.menu.controller;
+package com.naedam.mir9.management.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.naedam.mir9.menu.controller.model.service.ManagementService;
+import com.naedam.mir9.management.model.service.ManagementService;
 
 @Controller
 @RequestMapping("/management")
