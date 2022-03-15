@@ -1,4 +1,4 @@
-package com.naedam.mir9.admin.model.vo;
+package com.naedam.mir9.member.model.vo;
 
 import java.io.Serializable;
 
