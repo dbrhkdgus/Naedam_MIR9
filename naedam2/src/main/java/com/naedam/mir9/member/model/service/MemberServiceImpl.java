@@ -12,5 +12,6 @@ public class MemberServiceImpl implements MemberService {
 	private MemberDao memberDao;
 
 
+
 	
 }

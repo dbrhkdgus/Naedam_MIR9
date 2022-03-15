@@ -19,6 +19,7 @@ public class MemberController {
 	@RequestMapping("/list")
 	public String memberList() {
 		
+		
 		return "member/memberList";
 	}
 	

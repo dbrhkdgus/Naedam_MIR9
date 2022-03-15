@@ -12,6 +12,7 @@ public class MemberDaoImpl implements MemberDao {
 	private SqlSession session;
 
 
+
 	
 	
 }
