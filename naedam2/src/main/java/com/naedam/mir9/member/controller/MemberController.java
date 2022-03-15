@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.naedam.mir9.member.model.service.MemberService;
 import com.naedam.mir9.member.model.vo.MemberGrade;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	@RequestMapping("/list")
 	public String memberList() {
-		MemberGrade mg = memberService.test();
+		
 		return "member/memberList";
 	}
 	

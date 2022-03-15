@@ -11,10 +11,6 @@ public class MemberServiceImpl implements MemberService {
 	@Autowired
 	private MemberDao memberDao;
 
-	@Override
-	public MemberGrade test() {
-		MemberGrade mg = memberDao.test();
-		return mg;
-	}
+
 	
 }

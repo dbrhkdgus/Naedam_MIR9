@@ -4,6 +4,6 @@ import com.naedam.mir9.member.model.vo.MemberGrade;
 
 public interface MemberService {
 
-	MemberGrade test();
+	
 
 }

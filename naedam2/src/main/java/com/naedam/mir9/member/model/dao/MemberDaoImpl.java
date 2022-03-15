@@ -11,11 +11,7 @@ public class MemberDaoImpl implements MemberDao {
 	@Autowired
 	private SqlSession session;
 
-	@Override
-	public MemberGrade test() {
-		// TODO Auto-generated method stub
-		return session.selectOne("member.test");
-	}
+
 	
 	
 }
