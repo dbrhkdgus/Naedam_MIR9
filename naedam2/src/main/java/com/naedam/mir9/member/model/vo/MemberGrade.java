@@ -17,6 +17,5 @@ public class MemberGrade implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int memberGradeNo;
-	private int memberNo;
 	private String grade;
 }
