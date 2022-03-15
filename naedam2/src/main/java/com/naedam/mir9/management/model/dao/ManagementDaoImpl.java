@@ -1,4 +1,4 @@
-package com.naedam.mir9.menu.controller.model.dao;
+package com.naedam.mir9.management.model.dao;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;

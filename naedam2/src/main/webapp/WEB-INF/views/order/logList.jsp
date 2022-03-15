@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-	<jsp:param value="Log_List" name="title"/>
+	<jsp:param value="카드결제 로그관리" name="title"/>
 </jsp:include>
     <!-- content-wrapper -->
 <div class="content-wrapper">
