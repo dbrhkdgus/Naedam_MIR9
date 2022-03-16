@@ -20,6 +20,8 @@ public class MemberController {
 	public String memberList() {
 		
 		
+		
+		
 		return "member/memberList";
 	}
 	
