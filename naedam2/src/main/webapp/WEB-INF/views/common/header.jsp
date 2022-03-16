@@ -10,6 +10,8 @@
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
 	name="viewport">
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
@@ -32,7 +34,6 @@
 <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
 <link rel="stylesheet" href="/resources/css/_all-skins.min.css">
 <link href="/resources/css/admin.css" rel="stylesheet" type="text/css" />
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 <!-- fullcalendar -->
 <link href="//mir9.co.kr/resource/css/bootstrap-colorselector.css"

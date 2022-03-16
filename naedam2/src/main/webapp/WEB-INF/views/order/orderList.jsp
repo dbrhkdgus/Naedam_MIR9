@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
 	<jsp:param value="주문 관리" name="title"/>
 </jsp:include>
@@ -9,7 +13,6 @@
 		<h1>
 			주문 관리 <small>order list</small>
 		</h1>
-
 		<ol class="breadcrumb">
 			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
 			<li><a href="#">주문 관리</a></li>
@@ -97,7 +100,7 @@
 							</table>
 						</form>
 
-						<label style="margin-top: 5px;">총 5 건</label>
+						<label style="margin-top: 5px;">총 ${orderCnt } 건</label>
 						<table class="table table-bordered table-hover">
 							<form name="form_list" method="post"
 								action="?tpf=admin/order/process">
@@ -119,76 +122,23 @@
 										<td style="width: 60px;">명령</td>
 									</tr>
 								</thead>
-								<tr>
-									<td><input type="checkbox" name="list[]" value="20" /></td>
-									<td>220302_121817885</td>
-									<td>2022/03/02 12:18</td>
-									<td align="left">로즈플라워캔들</td>
-									<td>PARK종서</td>
-									<td>010-4814-0719</td>
-									<td align="right" style="color: #ff0505; font-weight: bold">2,000</td>
-									<td>무통장</td>
-									<td>2022/03/02 12:18</td>
-									<td style="font-weight: bold">주문취소</td>
-									<td><button type="button" onclick="onclick_update(20);"
-											class="btn btn-primary btn-xs">보기</button></td>
-								</tr>
-								<tr>
-									<td><input type="checkbox" name="list[]" value="19" /></td>
-									<td>200221_100335502</td>
-									<td>2020/02/21 10:03</td>
-									<td align="left">하루다섯팩</td>
-									<td>길동이홍</td>
-									<td>010-4177-2690</td>
-									<td align="right" style="color: #ff0505; font-weight: bold">12,000</td>
-									<td>무통장</td>
-									<td>2020/02/21 10:03</td>
-									<td style="font-weight: bold">입금대기</td>
-									<td><button type="button" onclick="onclick_update(19);"
-											class="btn btn-primary btn-xs">보기</button></td>
-								</tr>
-								<tr>
-									<td><input type="checkbox" name="list[]" value="18" /></td>
-									<td>200219_163444881</td>
-									<td>2020/02/19 16:35</td>
-									<td align="left">하루한팩 (보임)</td>
-									<td>길동이홍</td>
-									<td>010-4177-2690</td>
-									<td align="right" style="color: #ff0505; font-weight: bold">1,400</td>
-									<td>무통장</td>
-									<td>2020/02/19 16:35</td>
-									<td style="font-weight: bold">배송완료</td>
-									<td><button type="button" onclick="onclick_update(18);"
-											class="btn btn-primary btn-xs">보기</button></td>
-								</tr>
-								<tr>
-									<td><input type="checkbox" name="list[]" value="17" /></td>
-									<td>200213_104244389</td>
-									<td>2020/02/13 10:42</td>
-									<td align="left">하루다섯팩</td>
-									<td>길동이홍</td>
-									<td>010-4177-2690</td>
-									<td align="right" style="color: #ff0505; font-weight: bold">13,000</td>
-									<td>무통장</td>
-									<td>2020/02/13 10:42</td>
-									<td style="font-weight: bold">배송중</td>
-									<td><button type="button" onclick="onclick_update(17);"
-											class="btn btn-primary btn-xs">보기</button></td>
-								</tr>
-								<tr>
-									<td><input type="checkbox" name="list[]" value="16" /></td>
-									<td>200213_104111821</td>
-									<td>2020/02/13 10:41</td>
-									<td align="left">하루다섯팩</td>
-									<td>길동이홍</td>
-									<td>010-1111-2222</td>
-									<td align="right" style="color: #ff0505; font-weight: bold">13,000</td>
-									<td>무통장</td>
-									<td>2020/02/13 10:41</td>
-									<td style="font-weight: bold">입금확인</td>
-									<td><button type="button" onclick="onclick_update(16);"
-											class="btn btn-primary btn-xs">보기</button></td>
-								</tr>
+								<c:forEach var="order" items="${orderList }">
+									<tr>
+										<td><input type="checkbox" name="list[]" value="20" /></td>
+										<td>${fn:substring(order.orderNo,0,6) }-${fn:substring(order.orderNo,7,15) }</td>
+										<td><fmt:formatDate value="${order.orderDate}" pattern="yyyy-MM-dd"/></td>
+										<td align="left">${order.productName }</td>
+										<td>${order.memberName }</td>
+										<td>${order.phone }</td>
+										<td align="right" style="color: #ff0505; font-weight: bold">2,000</td>
+										<td>무통장</td>
+										<td>2022/03/02 12:18</td>
+										<td style="font-weight: bold">${order.status == 'W' ? '결제 대기':'' }</td>
+										<td><button type="button" onclick="onclick_update(20);"
+												class="btn btn-primary btn-xs">보기</button></td>
+									</tr>
+								</c:forEach>
+								
 							</form>
 						</table>
 						<br>
@@ -359,5 +309,12 @@
 	</div>
 </div>
 <!-- /.content-wrapper -->
+
+<script>
+	function setSearchDate(type){
+		console.log(type)
+;	}
+
+</script>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

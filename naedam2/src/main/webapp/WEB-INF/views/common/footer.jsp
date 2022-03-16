@@ -34,38 +34,6 @@
 
 
 <script language='javascript' src='//www.gstatic.com/charts/loader.js'></script>
-<script>
-			function drawChart() {
-				var data = google.visualization.arrayToDataTable(chart_data);
 
-				var options = {
-				  title: '(금액:천단위)',
-				  legend: {textStyle: {bold: false, color: 'black', fontSize: 13}},
-				  hAxis: {title: '',  titleTextStyle: {color: '#333'}},
-				  vAxis: {minValue: 0}
-				};
-
-				var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-				chart.draw(data, options);
-			}
-
-			function drawChart2() {
-
-				var data = google.visualization.arrayToDataTable(chart_data2);
-				var options = {
-					title: "",
-					pieHole : 0.4,
-				};
-
-				var chart = new google.visualization.PieChart(document.getElementById("chart_div2"));
-				chart.draw(data, options);
-			}
-			$(function() {
-				google.charts.load("current", {packages:['corechart']});
-				google.charts.setOnLoadCallback(drawChart);
-				google.charts.setOnLoadCallback(drawChart2);
-			});
-		
-</script>
 </body>
 </html>
