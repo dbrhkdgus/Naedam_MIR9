@@ -25,23 +25,18 @@
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<form name="form_search" id="form_search" method="post"
-							action="?tpf=admin/order/list">
+						<form name="form_search" id="form_search" method="post" action="/order/list">
 							<table class="table table-bordered" style="margin-bottom: 0;">
 								<tbody>
 									<tr>
 										<td class="menu">진행상태</td>
-										<td align="left"><select name="payment_status"
+										<td align="left"><select name="order_status"
 											class="form-control input-sm"
 											style="float: left; width: 130px; margin-right: 5px;">
 												<option value="">상태</option>
-												<option value="pay_ready">입금대기</option>
-												<option value="pay_done">입금확인</option>
-												<option value="delivery_ready">배송준비중</option>
-												<option value="delivery_ing">배송중</option>
-												<option value="delivery_done">배송완료</option>
-												<option value="order_cancel">주문취소</option>
-												<option value="refund">환불</option>
+												<c:forEach var="orderStatus" items="${orderStatusList }">
+													<option value="${orderStatus.status }">${orderStatus.statusName }</option>
+												</c:forEach>
 										</select></td>
 										<td class="menu">기간 검색</td>
 										<td align="left"><input type="text" name="start_date"
@@ -52,7 +47,7 @@
 											class="form-control input-sm txt_date1"
 											style="width: 100px; display: inline-block;" />
 
-											<button type="button" onclick="setSearchDate('D1');"
+											<button type="button" onclick="setSearchDate('D0');"
 												class="btn btn-primary btn-xs">오늘</button>
 											<button type="button" onclick="setSearchDate('D7');"
 												class="btn btn-primary btn-xs">7일</button>
@@ -78,10 +73,10 @@
 										<td align="left"><select name="field"
 											class="form-control input-sm"
 											style="float: left; padding-right: 0; width: 130px;">
-												<option value="order_name">주문자 성명</option>
-												<option value="receiver_name">수취인 성명</option>
-												<option value="order_mobile">휴대폰</option>
-												<option value="order_number">주문번호</option>
+												<option value="m.last_name || m.first_name">주문자 성명</option>
+												<option value="i.reciever">수취인 성명</option>
+												<option value="m.phone">휴대폰</option>
+												<option value="o.order_no">주문번호</option>
 										</select> <input type="text" name="keyword" id="keyword" value=""
 											class="form-control input-sm" placeholder="주문검색"
 											style="width: 50%; padding-left: 5px;" /></td>
@@ -134,8 +129,7 @@
 										<td>무통장</td>
 										<td>2022/03/02 12:18</td>
 										<td style="font-weight: bold">${order.status == 'W' ? '결제 대기':'' }</td>
-										<td><button type="button" onclick="onclick_update(20);"
-												class="btn btn-primary btn-xs">보기</button></td>
+										<td><button type="button" onclick="onclick_update(${order.orderNo});" class="btn btn-primary btn-xs">보기</button></td>
 									</tr>
 								</c:forEach>
 								
@@ -196,7 +190,51 @@
 						</h4>
 
 						<span id="order_list_txt"></span>
-
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<td style="width: 350px;">상품명</td>
+									<td>가격(원)</td>
+									<td>수량(개)</td>
+									<td style="width: 120px;">합계(원)</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="text-align: left;">
+										<img src="http://demoshop.mir9.kr/user/product/288_1.png" alt="" style="float: left; margin-right: 10px; width: 120px;'"/>
+										"로즈플라워캔들"
+										<br />
+										" - 사이즈 : S (+ 1,000)"
+										<br />
+										" - 색상 : 빨강"
+										<br />
+										" - 악세사리 : null"
+									</td>
+									<td class="money">1,000</td>
+									<td class="count">1</td>
+									<td class="money">
+										<span class="text-light-blie">2,000</span>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="money">상품합계</td>
+									<td class="money">2,000</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="money">배송료</td>
+									<td class="money">0</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="money">총 결제금액</td>
+									<td class="money">
+										<span class="red_16_b">
+											<b>2,000</b>
+										</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 						<div class="col-xs-5" style="padding: 0 5px 0 0;">
 							<h4>
 								<p class="text-light-blue">
@@ -311,9 +349,57 @@
 <!-- /.content-wrapper -->
 
 <script>
+	<!-- 모달창 제어 -->
+	function onclick_update(orderNo){
+		console.log(orderNo);
+		$.ajax({
+			//url: `\${restServerUrl}/menus`,
+			url:`${pageContext.request.contextPath}/order/orderDetail`,
+			data:{
+				orderNo : orderNo
+			},
+			method: "GET",
+			success(data){
+				
+			},
+			error: console.log
+		});  	
+		$("#modalContent").modal('show');
+	}
+	
+	
+	function selectAction(){
+		if($("select[name=order_status]").val() == '' & $("select[name=payment_type]").val() == '' & $("input[name=keyword]").val() == '' & ($("input[name=start_date]").val() == '' & $("input[name=end_date]").val() == '')){
+			return false;
+		}else{
+			$(document["form_search"]).submit();
+		}
+		
+	}
+
 	function setSearchDate(type){
 		console.log(type)
-;	}
+		console.log(type.slice(1,3));
+		$("input[name=start_date]").val(dateStr(type));
+		$("input[name=end_date]").val(dateStr('D0'));
+
+		
+	}
+	
+	function dateStr(type){
+		var date = new Date();
+		i = type.slice(1,3) * 1;
+		if(type.slice(0,1) == 'D'){
+			date = new Date(date-(60 * 60 * 24 * i));
+		}else if(type.slice(0,1) == 'M'){
+			date.setMonth(date.getMonth() - i);
+		}
+			var year = date.getFullYear();
+			var month = ('0' + (date.getMonth() + 1)).slice(-2);
+			var day = ('0' + (date.getDate() - i)).slice(-2);
+			var dateString = year + '-' + month  + '-' + day;	
+		return dateString;
+	}
 
 </script>
 

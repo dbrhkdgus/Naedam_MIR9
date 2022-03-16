@@ -21,6 +21,7 @@ public class OrderStatus implements Serializable {
 	private int orderStatusNo;
 	private String status;
 	private String orderStatusUpdate;
+	private String statusName;
 	
 
 }
