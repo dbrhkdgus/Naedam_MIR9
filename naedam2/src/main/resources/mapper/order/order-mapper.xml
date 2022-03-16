@@ -10,11 +10,67 @@
 	    join product p 
 	    on (o.product_no = p.product_no) 
 	    join order_status s 
-	    on(o.order_status_no = s.order_status_no) 
-	order by order_no desc
+	    on(o.order_status_no = s.order_status_no)
+	    join order_info i
+	    on(i.order_no = o.order_no)
+	    
+	<where>
+		<if test="order_status != null and order_status != ''">
+			s.status = #{order_status}
+		</if>
+		<if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
+			and 
+			 <choose>
+				<when test="start_date != '' and end_date == ''">
+					o.order_date <![CDATA[>=]]> to_date(#{start_date}, 'yyyy-MM-dd')
+				</when>
+				<when test="start_date == '' and end_date != ''">
+					o.order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd')
+				</when>
+				<otherwise>
+					o.order_date <![CDATA[>]]> to_date(#{start_date}, 'yyyy-MM-dd')
+					and 
+					o.order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd') + 1
+				</otherwise>
+			</choose>
+		</if>
+		<if test="field != null and field != '' and keyword != null and keyword != ''">
+			and
+			${field} like '%'||#{keyword}||'%'
+
+		</if>
+	</where>
+	order by o.order_no desc
   </select>
   
   <select id="selectOrderCnt" resultType="_int">
-  	select count(*) from tb_order
+  	select count(*) 
+	from tb_order o join member m 
+	    on (o.member_no = m.member_no) 
+	    join product p 
+	    on (o.product_no = p.product_no) 
+	    join order_status s 
+	    on(o.order_status_no = s.order_status_no)
+	<where>
+		<if test="order_status != null and order_status != ''">
+			s.status = #{order_status}
+		</if>
+	</where>
+  </select>
+  
+  <select id="selectOrderStatusList" resultType="orderStatus">
+  	select * from order_status order by order_status_no
+  </select>
+  
+  <select id="selectOneOrderInfoByOrderNo" resultType="orderInfo">
+  	select * from order_info where order_no = #{orderNo}
+  </select>
+  
+  <select id="selectOneOrderByOrderNo" resultType="order">
+  	select * from tb_order where order_no = #{orderNo}
+  </select>
+  
+  <select id="selectOneProductByProductNo" resultType="product">
+  	select * from product where product_no = #{productNo}
   </select>
 </mapper>

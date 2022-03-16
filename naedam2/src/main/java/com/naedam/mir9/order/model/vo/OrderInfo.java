@@ -19,11 +19,12 @@ public class OrderInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private int orderInfoNo;
-	private int orderNo;
+	private long orderNo;
 	private String reciever;
 	private String shippingAddress;
 	private String phone;
 	private String memo;
 	private String adminMemo;
+	private int orderAmt;
 
 }
