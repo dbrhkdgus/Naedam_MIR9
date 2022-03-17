@@ -35,7 +35,7 @@
 											style="float: left; width: 130px; margin-right: 5px;">
 												<option value="">상태</option>
 												<c:forEach var="orderStatus" items="${orderStatusList }">
-													<option value="${orderStatus.status }">${orderStatus.statusName }</option>
+													<option value="${orderStatus.orderStatusNo }">${orderStatus.statusName }</option>
 												</c:forEach>
 										</select></td>
 										<td class="menu">기간 검색</td>
@@ -73,10 +73,10 @@
 										<td align="left"><select name="field"
 											class="form-control input-sm"
 											style="float: left; padding-right: 0; width: 130px;">
-												<option value="m.last_name || m.first_name">주문자 성명</option>
-												<option value="i.reciever">수취인 성명</option>
-												<option value="m.phone">휴대폰</option>
-												<option value="o.order_no">주문번호</option>
+												<option value="last_name || first_name">주문자 성명</option>
+												<option value="receiver">수취인 성명</option>
+												<option value="phone">휴대폰</option>
+												<option value="order_no">주문번호</option>
 										</select> <input type="text" name="keyword" id="keyword" value=""
 											class="form-control input-sm" placeholder="주문검색"
 											style="width: 50%; padding-left: 5px;" /></td>
@@ -123,12 +123,12 @@
 										<td>${fn:substring(order.orderNo,0,6) }-${fn:substring(order.orderNo,7,15) }</td>
 										<td><fmt:formatDate value="${order.orderDate}" pattern="yyyy-MM-dd"/></td>
 										<td align="left">${order.productName }</td>
-										<td>${order.memberName }</td>
-										<td>${order.phone }</td>
-										<td align="right" style="color: #ff0505; font-weight: bold">2,000</td>
-										<td>무통장</td>
-										<td>2022/03/02 12:18</td>
-										<td style="font-weight: bold">${order.status == 'W' ? '결제 대기':'' }</td>
+										<td>${order.lastName}${order.firstName}</td>
+										<td>${fn:substring(order.phone,0,3) }-${fn:substring(order.phone,3,7) }-${fn:substring(order.phone,7,13)}</td>
+										<td align="right" style="color: #ff0505; font-weight: bold"><fmt:formatNumber value="${order.payAmt }" pattern="#,###" /></td>
+										<td>${order.payType }</td>
+										<td><fmt:formatDate value="${order.payDate}" pattern="yyyy-MM-dd"/> ${order.payDate == null ? ' - ':'' }</td>
+										<td style="font-weight: bold">${order.statusName}</td>
 										<td><button type="button" onclick="onclick_update(${order.orderNo});" class="btn btn-primary btn-xs">보기</button></td>
 									</tr>
 								</c:forEach>
@@ -202,8 +202,8 @@
 							<tbody>
 								<tr>
 									<td style="text-align: left;">
-										<img src="http://demoshop.mir9.kr/user/product/288_1.png" alt="" style="float: left; margin-right: 10px; width: 120px;'"/>
-										"로즈플라워캔들"
+										<img id="p_img" src="" alt="" style="float: left; margin-right: 10px; width: 120px;'"/>
+										"<span id="p_name"></span>"
 										<br />
 										" - 사이즈 : S (+ 1,000)"
 										<br />
@@ -211,25 +211,25 @@
 										<br />
 										" - 악세사리 : null"
 									</td>
-									<td class="money">1,000</td>
-									<td class="count">1</td>
+									<td class="money"><span id="p_sPrice"></span></td>
+									<td class="count"><span id="p_amt"></span></td>
 									<td class="money">
-										<span class="text-light-blie">2,000</span>
+										<span class="text-light-blie"><span id="p_ltPrice"></span></span>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="3" class="money">상품합계</td>
-									<td class="money">2,000</td>
+									<td class="money"><span id="p_priceNoDeli"></span></td>
 								</tr>
 								<tr>
 									<td colspan="3" class="money">배송료</td>
-									<td class="money">0</td>
+									<td class="money"><span id="deli_fee"></span></td>
 								</tr>
 								<tr>
 									<td colspan="3" class="money">총 결제금액</td>
 									<td class="money">
 										<span class="red_16_b">
-											<b>2,000</b>
+											<b><span id="p_totalPrice"></span></b>
 										</span>
 									</td>
 								</tr>
@@ -310,7 +310,7 @@
 												name="memo" id="memo" class="form-control input-sm" rows="5"
 												style="width: 200px;"></textarea>
 									</span> <span style="padding: 20px 0 0 10px; float: left">
-											<button type="button" onclick="updateMemo()"
+											<button id="update_admin_memo" type="button" onclick="updateAdminMemo()"
 												class="btn btn-primary btn-sm">
 												저장<br>하기
 											</button>
@@ -318,24 +318,19 @@
 								</tr>
 								<tr>
 									<td class="menu">상태</td>
-									<td align="left"><span style="float: left"> <input
-											type="text" name="delivery_code" id="delivery_code"
-											class="form-control input-sm"
-											style="float: left; margin-right: 2px; width: 100px;"
-											placeholder="송장번호"> <select name="payment_status"
-											id="payment_status" class="form-control input-sm"
-											style="width: 90px; padding: 0;">
-												<option value="pay_ready">입금대기</option>
-												<option value="pay_done">입금확인</option>
-												<option value="delivery_ready">배송준비중</option>
-												<option value="delivery_ing">배송중</option>
-												<option value="delivery_done">배송완료</option>
-												<option value="order_cancel">주문취소</option>
-												<option value="refund">환불</option>
-										</select>
-									</span> <span style="padding-left: 10px; float: left"><button
-												type="button" onclick="updatePaymentStatus()"
-												class="btn btn-primary btn-sm">저장하기</button></span></td>
+									<td align="left">
+										<span style="float: left"> 
+											<input type="text" name="delivery_code" id="delivery_code" class="form-control input-sm" style="float: left; margin-right: 2px; width: 100px;" 	placeholder="송장번호"> 
+												<select name="payment_status" id="payment_status" class="form-control input-sm" style="width: 90px; padding: 0;">
+													<c:forEach var="status" items="${orderStatusList }">
+														<option value="${status.orderStatusNo }">${status.statusName }</option>
+													</c:forEach>
+											</select>
+										</span> 
+										<span style="padding-left: 10px; float: left">
+											<button	id="update_order_status" type="button" onclick="updateOrderStatus()" class="btn btn-primary btn-sm">저장하기</button>
+										</span>
+									</td>
 								</tr>
 							</table>
 						</div>
@@ -351,7 +346,7 @@
 <script>
 	<!-- 모달창 제어 -->
 	function onclick_update(orderNo){
-		console.log(orderNo);
+		
 		$.ajax({
 			//url: `\${restServerUrl}/menus`,
 			url:`${pageContext.request.contextPath}/order/orderDetail`,
@@ -360,11 +355,102 @@
 			},
 			method: "GET",
 			success(data){
+				console.log(data)
+				// 구매내역 append? 값 채우기?
 				
+					$("#p_img").attr('src', data.imgUrl);
+				
+					var salePrice = data.salePrice * 1;
+					var orderAmt = data.orderAmt * 1;
+					var deliFee = data.deliFee;
+					// 상품명
+					$("#p_name").text(data.productName);
+					// 판매가
+					$("#p_sPrice").text(salePrice);
+					// 옵션 (존재하는 경우에만 입력 되도록)
+					
+					// 상품 수량
+					$("#p_amt").text(orderAmt);
+					
+					// tr에서의 합계 금액 : (판매가 + 옵션) * 수량
+					$("#p_ltPrice").text((salePrice * orderAmt));
+					
+					// 상품합계 (배송비 제외) : 모든 tr 합계 금액의 합 
+					$("#p_priceNoDeli").text((salePrice * orderAmt))
+					
+					// 배송비
+					$("#deli_fee").text(deliFee);
+					
+					// 총 결제 금액
+					$("#p_totalPrice").text(salePrice * orderAmt + deliFee);
+					
+				// 결제 정보
+				$("#order_name").text(data.name);
+				$("#order_mobile").text(data.phone);
+				$("#order_number").text(data.orderNo);
+				$("#total_price").text(data.payAmt);
+				$("#payment_type").text(data.payType);
+				$("#bank_account").text(data.account);
+				$("#bank_name").text(data.bankName);
+				$("#bank_depositor").text(data.owner);
+				$("#pay_name").text(data.payDepositor);
+				
+				
+				
+				// 수취인 정보
+				$("#receiver_name").text(data.receiver);
+				$("#receiver_mobile").text(data.receiverPhone);
+				$("#receiver_addr").text(data.shippingAddress);
+				$("#receiver_message").text(data.memo);
+				$("#receiver_memo").val(data.adminMemo);
+				$('#payment_status').val(data.orderStatusNo).prop("selected",true);
+				
+				
+				// 업데이트 온클릭 속성 추가
+				$("#update_order_status").attr('onclick', 'updateOrderStatus(' + data.orderNo +')')
+				$("#update_admin_memo").attr('onclick', 'updateAdminMemo(' + data.orderInfoNo + ')')
 			},
 			error: console.log
 		});  	
 		$("#modalContent").modal('show');
+	}
+	
+	<!-- 모달창 -> 상태 업데이트 -->
+	function updateOrderStatus(orderNo){
+		$.ajax({
+			//url: `\${restServerUrl}/menus`,
+			url:`${pageContext.request.contextPath}/order/updateOrderStatus`,
+			data:{
+				orderNo : orderNo,
+				statusNo : $("#payment_status").val()
+			},
+			method: "GET",
+			success(data){
+				if(data > 0){
+					alert('주문 상태가 변경되었습니다.');
+				}
+			},
+			error: console.log
+		});  
+	}
+	/* 모달창 --> 관리자 메모 업데이트 */
+	function updateAdminMemo(orderInfoNo){
+		$.ajax({
+			//url: `\${restServerUrl}/menus`,
+			url:`${pageContext.request.contextPath}/order/updateAdminMemo`,
+			data:{
+				orderInfoNo : orderInfoNo,
+				memo : $("#memo").val()
+			},
+			method: "GET",
+			success(data){
+				console.log(data)
+				if(data > 0){
+					alert('관리자 메모가 업데이트 되었습니다.');
+				}
+			},
+			error: console.log
+		});  
 	}
 	
 	

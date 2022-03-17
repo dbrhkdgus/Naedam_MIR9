@@ -31,5 +31,6 @@ public class Product implements Serializable {
 	private int individualPoint;
 	private String status;
 	private String langType;
+	private int sellerNo;
 
 }

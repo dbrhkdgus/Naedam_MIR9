@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.naedam.mir9.order.model.service.OrderService;
 import com.naedam.mir9.order.model.vo.Order;
-import com.naedam.mir9.order.model.vo.OrderInfo;
+import com.naedam.mir9.order.model.vo.OrderDetail;
 import com.naedam.mir9.order.model.vo.OrderStatus;
-import com.naedam.mir9.product.model.vo.Product;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,21 +54,35 @@ public class OrderController {
 	
 	@ResponseBody
 	@GetMapping("/orderDetail")
-	public Map<String, Object> orderDetail(String orderNo) {
+	public OrderDetail orderDetail(String orderNo) {
 		
-		Map<String, Object> map = new HashMap<String, Object>();
+		OrderDetail orderDetail = orderService.selectOneOrderDetailByOrderNo(Long.parseLong(orderNo));
+
+		return orderDetail;
+	}
+	@ResponseBody
+	@GetMapping("/updateOrderStatus")
+	public int updateOrderStatus(String orderNo, String statusNo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("orderNo", Long.parseLong(orderNo));
+		param.put("statusNo", Integer.parseInt(statusNo));
 		
-		Order order = orderService.selectOneOrderByOrderNo(Long.parseLong(orderNo));
-		OrderInfo orderInfo = orderService.selectOneOrderInfoByOrderNo(Long.parseLong(orderNo));
-		Product product = orderService.selectOneProductByProductNo(order.getProductNo());
-		System.out.println("orderInfo = " + orderInfo);
-		System.out.println("order = " + order);
-		System.out.println("product = " + product);
+		int result = orderService.updateOrderStaus(param);
 		
-		map.put("orderInfo", orderInfo);
-		map.put("order", order);
-		map.put("product", product);
-		return map;
+		return result;
+	}
+	
+	@ResponseBody
+	@GetMapping("/updateAdminMemo")
+	public int updateAdminMemo(String orderInfoNo, String memo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		
+		param.put("orderInfoNo", Integer.parseInt(orderInfoNo));
+		param.put("memo", memo);
+		
+		
+		int result = orderService.updateAdminMemo(param);
+		return result;
 	}
 	
 	@GetMapping("/logList")
@@ -83,6 +96,7 @@ public class OrderController {
 		List<Order> orderList = orderService.selectOrderList(param);
 		List<OrderStatus> orderStatusList = orderService.selectOrderStatusList();
 		int orderCnt = orderService.selectOrderCnt(param);
+		
 		
 		model.addAttribute("orderList",orderList);
 		model.addAttribute("orderCnt", orderCnt);
