@@ -4,33 +4,25 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="order">
   <select id="selectOrderList" resultType="orderWithNames">
-	select o.*, p.product_name, m.last_name || m.first_name as member_name,m.phone , s.status 
-	from tb_order o join member m 
-	    on (o.member_no = m.member_no) 
-	    join product p 
-	    on (o.product_no = p.product_no) 
-	    join order_status s 
-	    on(o.order_status_no = s.order_status_no)
-	    join order_info i
-	    on(i.order_no = o.order_no)
+	select * from v_order_detail_search
 	    
 	<where>
 		<if test="order_status != null and order_status != ''">
-			s.status = #{order_status}
+			order_status_no = #{order_status}
 		</if>
 		<if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
 			and 
 			 <choose>
 				<when test="start_date != '' and end_date == ''">
-					o.order_date <![CDATA[>=]]> to_date(#{start_date}, 'yyyy-MM-dd')
+					order_date <![CDATA[>=]]> to_date(#{start_date}, 'yyyy-MM-dd')
 				</when>
 				<when test="start_date == '' and end_date != ''">
-					o.order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd')
+					order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd')
 				</when>
 				<otherwise>
-					o.order_date <![CDATA[>]]> to_date(#{start_date}, 'yyyy-MM-dd')
+					order_date <![CDATA[>]]> to_date(#{start_date}, 'yyyy-MM-dd')
 					and 
-					o.order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd') + 1
+					order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd') + 1
 				</otherwise>
 			</choose>
 		</if>
@@ -40,20 +32,36 @@
 
 		</if>
 	</where>
-	order by o.order_no desc
+	order by order_no desc
   </select>
   
   <select id="selectOrderCnt" resultType="_int">
-  	select count(*) 
-	from tb_order o join member m 
-	    on (o.member_no = m.member_no) 
-	    join product p 
-	    on (o.product_no = p.product_no) 
-	    join order_status s 
-	    on(o.order_status_no = s.order_status_no)
+	select count(*) from v_order_detail_search
+	    
 	<where>
 		<if test="order_status != null and order_status != ''">
-			s.status = #{order_status}
+			order_status_no = #{order_status}
+		</if>
+		<if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
+			and 
+			 <choose>
+				<when test="start_date != '' and end_date == ''">
+					order_date <![CDATA[>=]]> to_date(#{start_date}, 'yyyy-MM-dd')
+				</when>
+				<when test="start_date == '' and end_date != ''">
+					order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd')
+				</when>
+				<otherwise>
+					order_date <![CDATA[>]]> to_date(#{start_date}, 'yyyy-MM-dd')
+					and 
+					order_date <![CDATA[<=]]> to_date(#{end_date}, 'yyyy-MM-dd') + 1
+				</otherwise>
+			</choose>
+		</if>
+		<if test="field != null and field != '' and keyword != null and keyword != ''">
+			and
+			${field} like '%'||#{keyword}||'%'
+
 		</if>
 	</where>
   </select>
@@ -61,16 +69,16 @@
   <select id="selectOrderStatusList" resultType="orderStatus">
   	select * from order_status order by order_status_no
   </select>
-  
-  <select id="selectOneOrderInfoByOrderNo" resultType="orderInfo">
-  	select * from order_info where order_no = #{orderNo}
+ 
+  <select id="selectOneOrderDetailByOrderNo" resultType="orderDetail">
+  	select * from v_order_detail where order_no = #{orderNo}
   </select>
   
-  <select id="selectOneOrderByOrderNo" resultType="order">
-  	select * from tb_order where order_no = #{orderNo}
-  </select>
-  
-  <select id="selectOneProductByProductNo" resultType="product">
-  	select * from product where product_no = #{productNo}
-  </select>
+  <update id="updateOrderStaus">
+  	update tb_order set order_status_no = #{statusNo}, order_status_update = sysdate  where order_no = #{orderNo}
+  </update>
+  <update id="updateAdminMemo">
+  	update order_info set admin_memo = #{memo} where order_info_no = #{orderInfoNo}
+  </update>
+
 </mapper>

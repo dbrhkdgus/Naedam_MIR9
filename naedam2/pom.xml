@@ -78,19 +78,23 @@
 		<!-- 오라클 클라우드 관련 -->
 		<dependency>
 		    <groupId>com.oracle.database.security</groupId>
-		    <artifactId>oraclepki</artifactId>
-		    <version>21.3.0.0</version>
+		    <artifactId>osdt_core</artifactId>
+		    <version>21.1.0.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.oracle.database.security</groupId>
 		    <artifactId>osdt_cert</artifactId>
-		    <version>21.3.0.0</version>
+		    <version>21.1.0.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.oracle.database.security</groupId>
-		    <artifactId>osdt_core</artifactId>
-		    <version>21.3.0.0</version>
-
+		    <artifactId>oraclepki</artifactId>
+		    <version>21.1.0.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.oracle.database.jdbc</groupId>
+		    <artifactId>ojdbc8</artifactId>
+		    <version>21.1.0.0</version>
 		</dependency>
 		<!-- jstl -->
 		<dependency>
@@ -117,6 +121,13 @@
 		    <version>2.3.3</version>
 		    <scope>provided</scope>
 		</dependency>
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.13.1</version>
+		    <scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

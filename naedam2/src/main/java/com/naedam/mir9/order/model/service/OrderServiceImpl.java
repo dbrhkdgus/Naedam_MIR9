@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.naedam.mir9.order.model.dao.OrderDao;
 import com.naedam.mir9.order.model.vo.Order;
+import com.naedam.mir9.order.model.vo.OrderDetail;
 import com.naedam.mir9.order.model.vo.OrderInfo;
 import com.naedam.mir9.order.model.vo.OrderStatus;
 import com.naedam.mir9.product.model.vo.Product;
+import com.naedam.mir9.product.model.vo.ProductImg;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -37,23 +39,28 @@ public class OrderServiceImpl implements OrderService {
 		return orderDao.selectOrderStatusList();
 	}
 
+
 	@Override
-	public OrderInfo selectOneOrderInfoByOrderNo(long orderNo) {
+	public int updateOrderStaus(Map<String, Object> param) {
 		// TODO Auto-generated method stub
-		return orderDao.selectOneOrderInfoByOrderNo(orderNo);
+		return orderDao.updateOrderStaus(param);
 	}
 
 	@Override
-	public Order selectOneOrderByOrderNo(long orderNo) {
+	public int updateAdminMemo(Map<String, Object> param) {
 		// TODO Auto-generated method stub
-		return orderDao.selectOneOrderByOrderNo(orderNo);
+		return orderDao.updateAdminMemo(param);
 	}
 
 	@Override
-	public Product selectOneProductByProductNo(int productNo) {
+	public OrderDetail selectOneOrderDetailByOrderNo(long orderNo) {
 		// TODO Auto-generated method stub
-		return orderDao.selectOneProductByProductNo(productNo);
+		return orderDao.selectOneOrderDetailByOrderNo(orderNo);
 	}
+	
+	
+
+	
 	
 	
 	
