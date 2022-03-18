@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
 	<jsp:param value="자주쓰는 옵션" name="title"/>
 </jsp:include>
@@ -34,47 +37,37 @@
 						</div>
 					</div>
 					<form name="form_list" method="post" action="?tpf=admin/product/process">
-		            <input type="hidden" name="mode" id="mode" />
-					<input type="hidden" name="locale" id="locale" value="ko" />
+			            <input type="hidden" name="mode" id="mode" />
+						<input type="hidden" name="locale" id="locale" value="ko" />
 
-                    <table class="table table-bordered table-hover">
-						<colgroup>
-							<col width="30px" />
-							<col width="30%" />
-							<col width="*" />
-							<col width="10%" />
-						</colgroup>
-                    <thead>
-                    <tr>
-                        <td><input type="checkbox" name="select_all" onclick=selectAllCheckBox('form_list'); /></td>
-                        <td>옵션명</td>
-                        <td>옵션값</td>
-                        <td>명령</td>
-                    </tr>
-                    </thead>
-      <tr>
-                        <td><input type="checkbox" name="list[]" value="9" /></td>
-                        <td>악세사리</td>
-                        <td>2단, 3단, 4단</td>
-                        <td>
-							<button type="button" onclick="onclickUpdate(9);" class="btn btn-primary btn-xs">수정하기</button>
-						</td>
-                    </tr>      <tr>
-                        <td><input type="checkbox" name="list[]" value="8" /></td>
-                        <td>색상</td>
-                        <td>빨강, 노랑, 파랑</td>
-                        <td>
-							<button type="button" onclick="onclickUpdate(8);" class="btn btn-primary btn-xs">수정하기</button>
-						</td>
-                    </tr>      <tr>
-                        <td><input type="checkbox" name="list[]" value="7" /></td>
-                        <td>사이즈</td>
-                        <td>S, L, XL</td>
-                        <td>
-							<button type="button" onclick="onclickUpdate(7);" class="btn btn-primary btn-xs">수정하기</button>
-						</td>
-                    </tr>                    </form>
-                    </table>
+	                    <table class="table table-bordered table-hover">
+							<colgroup>
+								<col width="30px" />
+								<col width="30%" />
+								<col width="*" />
+								<col width="10%" />
+							</colgroup>
+		                    <thead>
+			                    <tr>
+			                        <td><input type="checkbox" name="select_all" onclick=selectAllCheckBox('form_list'); /></td>
+			                        <td>옵션명</td>
+			                        <td>옵션값</td>
+			                        <td>명령</td>
+			                    </tr>
+		                    </thead>
+		                    	<c:forEach var="option" items="${optionList }">
+				      				<tr>
+				                        <td><input type="checkbox" name="list[]" value="9" /></td>
+				                        <td>${option.optionName }</td>
+				                        <td>${option.optionValues }</td>
+				                        <td>
+											<button type="button" onclick="onclickUpdate(${option.optionNo});" class="btn btn-primary btn-xs">수정하기</button>
+										</td>
+				                    </tr>                        
+		                    	</c:forEach>
+	                    </table>
+                    </form>
+                    
                     <br>
 
                     <button type="button" onclick="selectDelete('deleteOptionBank');" class="btn btn-danger btn-sm"><i class="fa fa-minus-square" aria-hidden="true"></i> 선택삭제</button>
@@ -108,8 +101,8 @@
 						<td align="left">
 							<ul id="list_option" style="list-style:none;padding-left:0;margin-bottom:0;">
 								<li class="first_item">
-									<input type="text" name="option_value" class="form-control input-sm" placeholder="옵션값" style="width:40%; display:inline; margin-bottom:10px;">
-									<input type="text" name="option_value_cost" class="form-control input-sm" placeholder="추가 가격(숫자만 입력)" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
+									<input type="text" id="static_option_name" name="option_value" class="form-control input-sm" placeholder="옵션값" style="width:40%; display:inline; margin-bottom:10px;">
+									<input type="text" id="static_option_value_cost"name="option_value_cost" class="form-control input-sm" placeholder="추가 가격(숫자만 입력)" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
 									<button type="button" class="btn btn-primary btn-xs" onclick="addOption();"><span class="glyphicon glyphicon-plus"></span> 옵션값 추가</button>
 								</li>
 							</ul>
@@ -120,7 +113,7 @@
 			</form>
             </div>
 			<div class="modal-footer">
-				<button type="button" onclick="register();" class="btn btn-primary">저장하기</button>
+				<button id="register_btn" type="button" onclick="register();" class="btn btn-primary">저장하기</button>
             </div>
         </div>
     </div>
@@ -137,10 +130,10 @@
 
 <script>
 <!--옵션 등록 modal 제어 -->
-
 function onclickInsert(){
 	$("#modalContent").modal('show');
 }
+<!-- 옵션 입력란 추가 -->
 function addOption(){
 	$("#list_option").append(`
 			<li class="first_item">
@@ -150,11 +143,12 @@ function addOption(){
 			</li>
 			`);
 }
-
+<!--추가된 옵션 입력란 제거 -->
 function removeOption(target){
 	$(target).parent().remove();
 }
 
+<!--옵션 insert -->
 function register(){
 	
 	const formData = new FormData(document["form_register"])
@@ -180,14 +174,65 @@ function register(){
 		contentType: "application/json; charset=utf-8",
 		success(data){
 			console.log(data)
+			if(data > 0){
+				alert("옵션이 추가되었습니다.");
+				$(document["form_register"]).clear();
+				$("#modalContent").modal('hide');
+				
+			}
+		},
+		error:console.log
+	});
+
+	
+}
+
+<!-- 옵션 수정 -->
+function onclickUpdate(optionNo){
+	$("#modalContent").modal('show');
+	$.ajax({
+		url:"${pageContext.request.contextPath}/option/list",
+		data: {
+			optionNo : optionNo
+		},
+		method:"POST",
+		success(data){
+				$("#option_name").val(data.pOption.optionName);
+				$.each(data.optionValueList, (i,k,v)=>{
+					if(i == 0){
+						$("#static_option_name").val(k.optionValue);
+						$("#static_option_value_cost").val(k.optionValueCost);
+					}else{
+						$("#list_option").append(`
+							<li class="first_item">
+								<input type="text" name="option_value" class="form-control input-sm" value="\${k.optionValue}" style="width:40%; display:inline; margin-bottom:10px;">
+								<input type="text" name="option_value_cost" class="form-control input-sm" value="\${k.optionValueCost}" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
+								<button type="button" class="btn btn-danger btn-xs" onclick="removeOption(this);"><span class="fa fa-minus-square"></span> 옵션값 제거</button>
+						</li>`);
+					}
+				});
+				$("#register_btn").attr('onclick',`option_update(\${data.pOption.optionNo});`);
 		},
 		error:console.log
 	});
 	
+	
+}
 
-	
-	
-	$(document["form_register"]).submit();
+// 옵션 업데이트 버튼
+function option_update(optionNo){
+	console.log(optionNo, typeof optionNo);
+	$.ajax({
+		url:"${pageContext.request.contextPath}/option/update",
+		data: {
+			optionNo : optionNo
+		},
+		method:"POST",
+		success(data){
+			console.log(data);
+		},
+		error:console.log
+	});
 }
 
 // 옵션 저장 전, 유효성 검사
