@@ -11,15 +11,16 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class productOption implements Serializable {
+public class OptionValue implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private int optionNo;
-	private String optionName;
 	private int optionValueNo;
-
+	private int optionNo;
+	private String optionValue;
+	private int optionValueCost;
+	
 }

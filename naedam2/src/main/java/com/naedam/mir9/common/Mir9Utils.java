@@ -1,9 +1,14 @@
 package com.naedam.mir9.common;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -155,6 +160,19 @@ public class Mir9Utils {
 		// 새파일명
 		
 		return sdf.format(new Date()) + df.format(Math.random() * 999) + ext;
+	}
+	
+	public static Map<String, Object> parseJsonStr(String jsonStr) {
+		ObjectMapper mapper = new ObjectMapper();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		try {
+			map = mapper.readValue(jsonStr, 
+			        new TypeReference<HashMap<String, Object>>() {});
+		} catch (IOException e) {
+			
+		}
+		
+		return map;
 	}
 	
 	
