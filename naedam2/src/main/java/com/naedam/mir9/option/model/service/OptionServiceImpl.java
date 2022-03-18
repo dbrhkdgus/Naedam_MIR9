@@ -46,6 +46,20 @@ public class OptionServiceImpl implements OptionService {
 		// TODO Auto-generated method stub
 		return optionDao.selectOptionValueListByOptionNo(optionNo);
 	}
+
+	@Override
+	public int updateOptionValue(OptionValue ov) {
+		// TODO Auto-generated method stub
+		return optionDao.updateOptionValue(ov);
+	}
+
+	@Override
+	public int updateProductOption(ProductOption pOption) {
+		// TODO Auto-generated method stub
+		return optionDao.updateProductOption(pOption);
+	}
+	
+	
 	
 	
 	

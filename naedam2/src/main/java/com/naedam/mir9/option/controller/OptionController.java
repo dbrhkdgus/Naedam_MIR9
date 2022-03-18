@@ -34,6 +34,7 @@ public class OptionController {
 		ArrayList<String> valueList = (ArrayList<String>) map.get("option_value");
 		ArrayList<String> valueCostList = (ArrayList<String>) map.get("option_value_cost");
 		
+		
 		try {
 			result = optionService.insertOption(map);
 			
@@ -67,5 +68,43 @@ public class OptionController {
 		
 		return result;
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@PostMapping("/update")
+	public int updateOption(@RequestBody String jsonStr) {
+		Map<String, Object> map = Mir9Utils.parseJsonStr(jsonStr);
+		
+		ArrayList<String> valueList = (ArrayList<String>) map.get("option_value");
+		ArrayList<String> valueCostList = (ArrayList<String>) map.get("option_value_cost");
+		ArrayList<String> valueNoList = (ArrayList<String>) map.get("option_value_no");
+		int result = 0;
+		
+		for(int i = 0; i < valueList.size(); i++) {
+			
+			OptionValue ov = new OptionValue();
+			ov.setOptionValueNo(Integer.parseInt(valueNoList.get(i)));
+			ov.setOptionNo((int) map.get("optionNo"));
+			ov.setOptionValue(valueList.get(i));
+			ov.setOptionValueCost(Integer.parseInt(valueCostList.get(i).replace(",", "")));
+			
+			
+			result = optionService.updateOptionValue(ov);
+			
+		}
+		
+		ProductOption pOption = new ProductOption();
+		pOption.setOptionNo((int) map.get("optionNo"));
+		pOption.setOptionName((String)map.get("option_name"));
+		
+		result = optionService.updateProductOption(pOption);
+		
+		
+		
+		
+		
+		
+		return result;
 	}
 }

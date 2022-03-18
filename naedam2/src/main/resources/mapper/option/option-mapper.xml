@@ -27,4 +27,12 @@
   <select id="selectOptionValueListByOptionNo" resultType="optionValue">
   	select * from option_value where option_no = #{optionNo}
   </select>
+  
+  
+  <update id="updateOptionValue">
+  	update option_value set option_value = #{optionValue}, option_value_cost = #{optionValueCost} where option_value_no = #{optionValueNo}
+  </update>
+  <update id="updateProductOption">
+  	update product_option set option_name = #{optionName} where option_no = #{optionNo}
+  </update>
 </mapper>
