@@ -14,8 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/member")
 @Slf4j
 public class MemberController {
+	
 	@Autowired
 	private MemberService memberService;
+	
 	@RequestMapping("/list")
 	public String memberList() {
 		
