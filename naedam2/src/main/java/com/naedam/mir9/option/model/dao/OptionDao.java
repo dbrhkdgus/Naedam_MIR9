@@ -19,4 +19,8 @@ public interface OptionDao {
 
 	List<OptionValue> selectOptionValueListByOptionNo(int optionNo);
 
+	int updateOptionValue(OptionValue ov);
+
+	int updateProductOption(ProductOption pOption);
+
 }

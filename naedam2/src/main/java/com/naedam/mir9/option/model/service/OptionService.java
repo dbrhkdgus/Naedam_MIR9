@@ -19,4 +19,8 @@ public interface OptionService {
 
 	List<OptionValue> selectOptionValueListByOptionNo(int optionNo);
 
+	int updateOptionValue(OptionValue ov);
+
+	int updateProductOption(ProductOption pOption);
+
 }

@@ -100,11 +100,7 @@
 						<td class="menu">옵션값</td>
 						<td align="left">
 							<ul id="list_option" style="list-style:none;padding-left:0;margin-bottom:0;">
-								<li class="first_item">
-									<input type="text" id="static_option_name" name="option_value" class="form-control input-sm" placeholder="옵션값" style="width:40%; display:inline; margin-bottom:10px;">
-									<input type="text" id="static_option_value_cost"name="option_value_cost" class="form-control input-sm" placeholder="추가 가격(숫자만 입력)" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
-									<button type="button" class="btn btn-primary btn-xs" onclick="addOption();"><span class="glyphicon glyphicon-plus"></span> 옵션값 추가</button>
-								</li>
+
 							</ul>
 							※ 상품 등록 시 기본 입력될 옵션 값입니다.
 						</td>
@@ -132,6 +128,12 @@
 <!--옵션 등록 modal 제어 -->
 function onclickInsert(){
 	$("#modalContent").modal('show');
+	$("#list_option").append(`
+			<li class="first_item">
+				<input type="text" name="option_value" class="form-control input-sm" placeholder="옵션값" style="width:40%; display:inline; margin-bottom:10px;">
+				<input type="text" name="option_value_cost" class="form-control input-sm" placeholder="추가 가격(숫자만 입력)" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
+				<button type="button" class="btn btn-primary btn-xs" onclick="addOption();"><span class="glyphicon glyphicon-plus"></span> 옵션값 추가</button>
+		</li>`);
 }
 <!-- 옵션 입력란 추가 -->
 function addOption(){
@@ -198,17 +200,25 @@ function onclickUpdate(optionNo){
 		method:"POST",
 		success(data){
 				$("#option_name").val(data.pOption.optionName);
-				$.each(data.optionValueList, (i,k,v)=>{
+				$.each(data.optionValueList, (i,k)=>{
+					console.log(i,k);
 					if(i == 0){
-						$("#static_option_name").val(k.optionValue);
-						$("#static_option_value_cost").val(k.optionValueCost);
-					}else{
 						$("#list_option").append(`
 							<li class="first_item">
 								<input type="text" name="option_value" class="form-control input-sm" value="\${k.optionValue}" style="width:40%; display:inline; margin-bottom:10px;">
 								<input type="text" name="option_value_cost" class="form-control input-sm" value="\${k.optionValueCost}" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
-								<button type="button" class="btn btn-danger btn-xs" onclick="removeOption(this);"><span class="fa fa-minus-square"></span> 옵션값 제거</button>
+								<input type="hidden" name="option_value_no" value="\${k.optionValueNo}" />
+								<button type="button" class="btn btn-primary btn-xs" onclick="addOption();"><span class="glyphicon glyphicon-plus"></span> 옵션값 추가</button>
 						</li>`);
+						
+					}else{
+						$("#list_option").append(`
+								<li class="first_item">
+									<input type="text" name="option_value" class="form-control input-sm" value="\${k.optionValue}" style="width:40%; display:inline; margin-bottom:10px;">
+									<input type="text" name="option_value_cost" class="form-control input-sm" value="\${k.optionValueCost}" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
+									<input type="hidden" name="option_value_no" value="\${k.optionValueNo}" />
+									<button type="button" class="btn btn-danger btn-xs" onclick="removeOption(this);"><span class="fa fa-minus-square"></span> 옵션값 제거</button>
+							</li>`);
 					}
 				});
 				$("#register_btn").attr('onclick',`option_update(\${data.pOption.optionNo});`);
@@ -222,17 +232,45 @@ function onclickUpdate(optionNo){
 // 옵션 업데이트 버튼
 function option_update(optionNo){
 	console.log(optionNo, typeof optionNo);
+	const formData = new FormData(document["form_register"])
+	var obj = {};
+	for(const [k, v] of formData){
+		obj[k] = v;
+	};
+	obj.option_value = [];
+	obj.option_value_cost = [];
+	obj.option_value_no = [];
+	$.each($("input[name=option_value]"), (index, value)=>{
+		 obj.option_value.push($(value).val());
+	});
+	$.each($("input[name=option_value_cost]"), (index, value)=>{
+		 obj.option_value_cost.push($(value).val());
+	});
+	
+		
+	$.each($("input[name=option_value_no]"), (index, value)=>{
+		obj.option_value_no.push($(value).val());
+	});
+	obj.optionNo = optionNo;
+	const jsonStr = JSON.stringify(obj);
+	console.log(jsonStr);
+	
 	$.ajax({
 		url:"${pageContext.request.contextPath}/option/update",
-		data: {
-			optionNo : optionNo
-		},
 		method:"POST",
+		data: jsonStr,
+		contentType: "application/json; charset=utf-8",
 		success(data){
-			console.log(data);
+			if(data > 0){
+				alert("옵션 정보가 수정되었습니다.");
+			}
+
 		},
 		error:console.log
-	});
+	});	
+	
+	
+	
 }
 
 // 옵션 저장 전, 유효성 검사

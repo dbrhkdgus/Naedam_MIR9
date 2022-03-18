@@ -45,6 +45,18 @@ public class OptionDaoImpl implements OptionDao {
 		// TODO Auto-generated method stub
 		return session.selectList("option.selectOptionValueListByOptionNo", optionNo);
 	}
+
+	@Override
+	public int updateOptionValue(OptionValue ov) {
+		// TODO Auto-generated method stub
+		return session.update("option.updateOptionValue", ov);
+	}
+
+	@Override
+	public int updateProductOption(ProductOption pOption) {
+		// TODO Auto-generated method stub
+		return session.update("option.updateProductOption", pOption);
+	}
 	
 	
 }
