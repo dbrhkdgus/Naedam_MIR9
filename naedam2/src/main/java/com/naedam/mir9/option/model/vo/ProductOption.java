@@ -11,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class productOption implements Serializable {
+public class ProductOption implements Serializable {
 
 	/**
 	 * 
