@@ -94,7 +94,7 @@
                 <h4 class="modal-title" id="modal-title-item">상품 기본옵션 관리</h4>
             </div>
             <div class="modal-body">
-			<form name="form_register" method="post" onsubmit="return false;" action="?tpf=admin/product/process">
+			<form name="form_register" method="post" onsubmit="return false;" action="${pageContext.request.contextPath}/option">
 				<input type="hidden" name="mode" id="mode" value="insertOptionBank">
 				<input type="hidden" name="code" id="code">
 				<input type="hidden" name="locale" value="ko">
@@ -108,8 +108,8 @@
 						<td align="left">
 							<ul id="list_option" style="list-style:none;padding-left:0;margin-bottom:0;">
 								<li class="first_item">
-									<input type="text" name="option_value[]" class="form-control input-sm" placeholder="옵션값" style="width:40%; display:inline; margin-bottom:10px;">
-									<input type="text" name="option_price[]" class="form-control input-sm" placeholder="추가 가격(숫자만 입력)" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
+									<input type="text" name="option_value" class="form-control input-sm" placeholder="옵션값" style="width:40%; display:inline; margin-bottom:10px;">
+									<input type="text" name="option_value_cost" class="form-control input-sm" placeholder="추가 가격(숫자만 입력)" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
 									<button type="button" class="btn btn-primary btn-xs" onclick="addOption();"><span class="glyphicon glyphicon-plus"></span> 옵션값 추가</button>
 								</li>
 							</ul>
@@ -134,5 +134,69 @@
 	</li>
 </div>
 </div><!-- /.content-wrapper -->
+
+<script>
+<!--옵션 등록 modal 제어 -->
+
+function onclickInsert(){
+	$("#modalContent").modal('show');
+}
+function addOption(){
+	$("#list_option").append(`
+			<li class="first_item">
+				<input type="text" name="option_value" class="form-control input-sm" placeholder="옵션값" style="width:40%; display:inline; margin-bottom:10px;">
+				<input type="text" name="option_value_cost" class="form-control input-sm" placeholder="추가 가격(숫자만 입력)" onkeyup="this.value=displayComma(checkAmountNum(this.value))"  style="width:30%; display:inline; margin-bottom:10px;">
+				<button type="button" class="btn btn-danger btn-xs" onclick="removeOption(this);"><span class="fa fa-minus-square"></span> 옵션값 제거</button>
+			</li>
+			`);
+}
+
+function removeOption(target){
+	$(target).parent().remove();
+}
+
+function register(){
+	
+	const formData = new FormData(document["form_register"])
+	var obj = {};
+	for(const [k, v] of formData){
+		obj[k] = v;
+	};
+	obj.option_value = [];
+	obj.option_value_cost = [];
+	$.each($("input[name=option_value]"), (idex, value)=>{
+		 obj.option_value.push($(value).val());
+	});
+	$.each($("input[name=option_value_cost]"), (idex, value)=>{
+		 obj.option_value_cost.push($(value).val());
+	});
+
+	const jsonStr = JSON.stringify(obj);
+	
+	$.ajax({
+		url:"${pageContext.request.contextPath}/option/insert",
+		method:"POST",
+		data: jsonStr,
+		contentType: "application/json; charset=utf-8",
+		success(data){
+			console.log(data)
+		},
+		error:console.log
+	});
+	
+
+	
+	
+	$(document["form_register"]).submit();
+}
+
+// 옵션 저장 전, 유효성 검사
+function optionCheck(){
+	
+}
+
+
+
+</script>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>
